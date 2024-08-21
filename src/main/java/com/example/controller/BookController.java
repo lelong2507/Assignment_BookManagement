@@ -13,6 +13,7 @@ import com.example.model.Category;
 import com.example.services.BookService;
 import com.example.services.CategoryService;
 
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,17 @@ public class BookController {
         this.bookService = bookService;
         this.categoryService = categoryService;
     }
+
+   @ExceptionHandler(StackOverflowError.class)
+    public String handleStackOverflowError() {
+        return "redirect:/error";
+    }
+
+    @GetMapping("/error")
+    public String showErrorPage() {
+        return "error";
+    }
+    
 
     @GetMapping("/")
     public String showListBook(Model model) {
@@ -72,6 +84,14 @@ public class BookController {
         return "components/addBook";
     }
 
+    @GetMapping("/search")
+    public String handleSearchMethod(@RequestParam("keyWords") String keyWord, Model model) {
+        List<Book> bookSearchs = bookService.searchBooks(keyWord);
+        System.out.println(bookSearchs);
+        model.addAttribute("bookSearch", bookSearchs);
+        return "components/searchBook"; 
+    }
+
     @PostMapping("/create")
     public String handleCreateBook(Model model, @ModelAttribute("book") Book book,
             @ModelAttribute("bookDetails") BookDetails bookDetails) {
@@ -96,7 +116,7 @@ public class BookController {
         existingBook.setBookDetails(book.getBookDetails());
         existingBook.setCategory(book.getCategory());
 
-        bookService.updateBook(existingBook,id);
+        bookService.updateBook(existingBook, id);
 
         return "redirect:/books";
     }

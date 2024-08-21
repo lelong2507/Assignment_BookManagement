@@ -29,6 +29,10 @@
         <form action="/books/create" method="post" th:object="${book}">
             <div class="d-flex flex-column">
                 <div class="mb-3">
+                    <label class="form-label">Id</label>
+                    <input class="form-control" type="text" th:field="*{idBook}" disabled />
+                </div>
+                <div class="mb-3">
                     <label class="form-label">Name</label>
                     <input class="form-control" type="text" th:field="*{name}" />
                 </div>

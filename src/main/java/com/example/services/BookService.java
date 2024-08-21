@@ -15,4 +15,6 @@ public interface BookService {
     void deleteBook(int idBook);
 
     Book findBookById(int idBook);
+
+    List<Book> searchBooks(String keyWords);
 }
