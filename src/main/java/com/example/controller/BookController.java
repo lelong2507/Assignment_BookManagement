@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.model.Book;
@@ -13,11 +14,14 @@ import com.example.model.Category;
 import com.example.services.BookService;
 import com.example.services.CategoryService;
 
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
@@ -32,7 +36,7 @@ public class BookController {
         this.categoryService = categoryService;
     }
 
-   @ExceptionHandler(StackOverflowError.class)
+    @ExceptionHandler(StackOverflowError.class)
     public String handleStackOverflowError() {
         return "redirect:/error";
     }
@@ -41,7 +45,6 @@ public class BookController {
     public String showErrorPage() {
         return "error";
     }
-    
 
     @GetMapping("/")
     public String showListBook(Model model) {
@@ -60,7 +63,6 @@ public class BookController {
         return "components/updateBook";
     }
 
-    // Method Delete
     @GetMapping("/delete/{id}")
     public String deleteBook(@PathVariable("id") String id) {
 
@@ -88,20 +90,20 @@ public class BookController {
     public String handleSearchMethod(@RequestParam("keyWords") String keyWord, Model model) {
         List<Book> bookSearchs = bookService.searchBooks(keyWord);
         System.out.println(bookSearchs);
-        model.addAttribute("bookSearch", bookSearchs);
-        return "components/searchBook"; 
+        model.addAttribute("bookList", bookSearchs);
+        return "components/updateBook";
     }
 
     @PostMapping("/create")
-    public String handleCreateBook(Model model, @ModelAttribute("book") Book book,
-            @ModelAttribute("bookDetails") BookDetails bookDetails) {
+    public String handleCreateBook(@Valid Model model, @ModelAttribute("book") Book book, BindingResult result) {
         System.out.println("Book: " + book);
-        System.out.println("BookDetails: " + bookDetails);
 
-        book.setBookDetails(bookDetails);
-        bookDetails.setBook(book);
-
-        bookService.addBook(book, bookDetails);
+        if (result.hasErrors()) {
+        model.addAttribute("cateList", categoryService.showListCategory());
+        return "create-book-form";
+        }
+        book.setBookDetails(book.getBookDetails());
+        bookService.addBook(book, book.getBookDetails());
 
         return "redirect:/books/";
     }

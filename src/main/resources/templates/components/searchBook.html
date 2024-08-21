@@ -21,7 +21,8 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:if="${bookSearch != null}">
+            <tr th:each="book : ${bookList}">
+                <td th:text="${book.idBook}"></td>
                 <td th:text="${book.name}"></td>
                 <td th:text="${book.author}"></td>
                 <td th:text="${book.category.name}"></td>

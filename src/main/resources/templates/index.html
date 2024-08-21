@@ -99,6 +99,9 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <div th:if="${#lists.isEmpty(bookList)}" class="text-danger">
+                        No data to list
+                    </div>
                     <tr th:each="book : ${bookList}">
                         <td th:text="${book.idBook}"></td>
                         <td th:text="${book.name}"></td>
@@ -123,7 +126,7 @@
                 </tbody>
             </table>
         </div>
-        
+
     </div>
 
 

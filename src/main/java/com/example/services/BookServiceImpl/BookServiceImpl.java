@@ -59,7 +59,7 @@ public class BookServiceImpl implements BookService {
             if (newBook.getBookDetails() != null) {
                 if (existingBook.getBookDetails() == null) {
                     existingBook.setBookDetails(new BookDetails());
-                    existingBook.getBookDetails().setBook(existingBook); // Liên kết BookDetails với Book
+                    existingBook.getBookDetails().setBook(existingBook);
                 }
                 existingBook.getBookDetails().setIsbn(newBook.getBookDetails().getIsbn());
                 existingBook.getBookDetails().setPrice(newBook.getBookDetails().getPrice());
